@@ -3,15 +3,17 @@ import { ChangeEvent, useReducer } from 'react';
 import Cta from './components/Cta';
 import FormInput from './components/FormInput';
 
+type Result = {
+  name: string;
+  task: string;
+}
+
 type State = {
   tasks: string[];
   participants: string[];
   task: string;
   participant: string;
-  results: {
-    ready: boolean;
-    list: { name: string; task: string }[];
-  };
+  results: Result[];
 };
 
 type Action = {
@@ -33,15 +35,30 @@ const shuffle = (array: string[]): string[] => {
   return array.sort(() => Math.random() - 0.5);
 };
 
+const assignTasks = (participants: string[], tasks: string[]): Result[] => {
+  const tasksAux = [...tasks];
+  const results: Result[] = [];
+
+  while (tasks.length > results.length) {
+    participants.forEach((name) => {
+      const task = shuffle(tasksAux)[Math.floor(Math.random() * tasksAux.length)];
+      results.push({
+        name,
+        task: task || 'Zafaste!',
+      });
+      tasksAux.splice(tasksAux.indexOf(task), 1);
+    });
+  }
+
+  return results as Result[];
+};
+
 const initialState: State = {
   tasks: [],
   participants: [],
   task: '',
   participant: '',
-  results: {
-    ready: false,
-    list: [],
-  },
+  results: [],
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -66,19 +83,8 @@ const reducer = (state: State, action: Action): State => {
     case 'CLEAR_ALL':
       return initialState;
     case 'GET_RESULTS':
-      const shuffledparticipants = shuffle(state.participants);
-      const shuffledTasks = shuffle(state.tasks);
-
-      const results = shuffledparticipants.map((p, i) => {
-        if (!p) return { name: '', task: '' };
-        return {
-          name: p,
-          task:
-            shuffledTasks[i] ||
-            'No tasks for you because you would mess it up!',
-        };
-      });
-      return { ...state, results: { ready: true, list: results } };
+      const results: Result[] = assignTasks(state.participants, state.tasks);
+      return { ...state, results };
     default:
       return state;
   }
@@ -92,60 +98,74 @@ function App() {
       <h1 className='text-4xl font-semibold text-white'>Randomly!</h1>
 
       <section className='mt-20 grid grid-cols-2'>
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className='col-span-1 flex flex-col gap-10'
-        >
-          <FormInput
-            value={state.participant}
-            type='participant'
-            handleChange={(e: ChangeEvent<HTMLInputElement>) =>
-              dispatch({
-                type: 'ON_CHANGE',
-                payload: {
-                  key: 'participant',
-                  value: e.target.value,
-                },
-              })
-            }
-            handleClick={() => {
-              dispatch({
-                type: 'SET_PARTICIPANT',
-                payload: state.participant,
-              });
-            }}
-          />
+        <article>
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className='col-span-1 flex flex-col gap-10'
+          >
+            <FormInput
+              value={state.participant}
+              type='participant'
+              handleChange={(e: ChangeEvent<HTMLInputElement>) =>
+                dispatch({
+                  type: 'ON_CHANGE',
+                  payload: {
+                    key: 'participant',
+                    value: e.target.value,
+                  },
+                })
+              }
+              handleClick={() => {
+                dispatch({
+                  type: 'SET_PARTICIPANT',
+                  payload: state.participant,
+                });
+              }}
+            />
 
-          <FormInput
-            value={state.task}
-            type='task'
-            handleChange={(e: ChangeEvent<HTMLInputElement>) =>
-              dispatch({
-                type: 'ON_CHANGE',
-                payload: {
-                  key: 'task',
-                  value: e.target.value,
-                },
-              })
-            }
-            handleClick={() => {
-              dispatch({
-                type: 'SET_TASK',
-                payload: state.task,
-              });
-            }}
-          />
-        </form>
+            <FormInput
+              value={state.task}
+              type='task'
+              handleChange={(e: ChangeEvent<HTMLInputElement>) =>
+                dispatch({
+                  type: 'ON_CHANGE',
+                  payload: {
+                    key: 'task',
+                    value: e.target.value,
+                  },
+                })
+              }
+              handleClick={() => {
+                dispatch({
+                  type: 'SET_TASK',
+                  payload: state.task,
+                });
+              }}
+            />
+          </form>
+          <div className='flex gap-5'>
+            <Cta
+              text='Get results'
+              type='success'
+              handleClick={() => dispatch({ type: 'GET_RESULTS' })}
+            />
+            <Cta
+              text='Clear all'
+              type='error'
+              handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
+            />
+          </div>
+        </article>
 
         <div className='col-span-1'>
           <h2 className='text-white text-2xl font-medium mb-4'>
-            {!state.results.list.length
+            {!state.results.length
               ? 'Input some data to see the results!'
               : 'Results are here! Now get to work!'}
           </h2>
           <div className='text-gray-400'>
-            {state.results.list.length ? (
-              state.results.list.map((result, i) => (
+            {state.results.length ? (
+              state.results.map((result, i) => (
                 <div key={i}>
                   <p>
                     {result.name}: {result.task}
@@ -171,11 +191,6 @@ function App() {
           </div>
         </div>
       </section>
-
-      <footer className='flex gap-5'>
-        <Cta text='Get results' type='success' handleClick={() => dispatch({ type: 'GET_RESULTS' })} />
-        <Cta text='Clear all' type='error' handleClick={() => dispatch({ type: 'CLEAR_ALL' })} />
-      </footer>
     </main>
   );
 }
