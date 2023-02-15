@@ -22,6 +22,7 @@ type Action = {
     | 'SET_TASK'
     | 'ON_CHANGE'
     | 'CLEAR_ALL'
+    | 'RESET_WITH_PARTICIPANTS'
     | 'GET_RESULTS';
   payload?:
     | string
@@ -38,7 +39,7 @@ const shuffle = (array: string[]): string[] => {
 const assignTasks = (participants: string[], tasks: string[]): Result[] => {
   const tasksAux = [...tasks];
   const results: Result[] = [];
-
+  // TODO: niveles de dificultad a las tareas
   while (tasks.length > results.length) {
     participants.forEach((name) => {
       const task = shuffle(tasksAux)[Math.floor(Math.random() * tasksAux.length)];
@@ -82,6 +83,8 @@ const reducer = (state: State, action: Action): State => {
       return state;
     case 'CLEAR_ALL':
       return initialState;
+    case 'RESET_WITH_PARTICIPANTS':
+      return { ...initialState, participants: state.participants  }
     case 'GET_RESULTS':
       const results: Result[] = assignTasks(state.participants, state.tasks);
       return { ...state, results };
@@ -153,6 +156,11 @@ function App() {
               text='Clear all'
               type='error'
               handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
+            />
+            <Cta
+              text='Clear all but keep participants'
+              type='error'
+              handleClick={() => dispatch({ type: 'RESET_WITH_PARTICIPANTS' })}
             />
           </div>
         </article>
