@@ -156,27 +156,31 @@ function App() {
             />
           </form>
 
-          <div className='flex gap-5'>
-            <Cta
-              text='Get results'
-              type='success'
-              handleClick={() => dispatch({ type: 'GET_RESULTS' })}
-            />
-            <Cta
-              text='Clear all'
-              type='error'
-              handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
-            />
-            <Cta
-              text='Clear all but keep participants'
-              type='error'
-              handleClick={() => dispatch({ type: 'RESET_WITH_PARTICIPANTS' })}
-            />
-            <Cta
-              text='Clear all but keep tasks'
-              type='error'
-              handleClick={() => dispatch({ type: 'RESET_WITH_TASKS' })}
-            />
+          <div className='mt-20'>
+            <div className='flex gap-5'>
+              <Cta
+                text='Get results'
+                type='success'
+                handleClick={() => dispatch({ type: 'GET_RESULTS' })}
+              />
+              <Cta
+                text='Clear all'
+                type='error'
+                handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
+              />
+            </div>
+            <div className='mt-8 flex gap-5'>
+              <Cta
+                text='Clear all but keep participants'
+                type='error'
+                handleClick={() => dispatch({ type: 'RESET_WITH_PARTICIPANTS' })}
+              />
+              <Cta
+                text='Clear all but keep tasks'
+                type='error'
+                handleClick={() => dispatch({ type: 'RESET_WITH_TASKS' })}
+              />
+            </div>
           </div>
         </article>
 
