@@ -125,7 +125,7 @@ function App() {
                     })
                   }
                   handleClick={() => {
-                    if (state.participant !== '') {
+                    if (state.participant !== '' && /^[a-zA-Z0-9]+$/.test(state.participant)) {
                       dispatch({
                         type: 'SET_PARTICIPANT',
                         payload: state.participant,
@@ -152,7 +152,7 @@ function App() {
                     });
                   }}
                   handleClick={() => {
-                    if (state.task !== '') {
+                    if (state.task !== '' && /^[a-zA-Z0-9]+$/.test(state.task)) {
                       dispatch({
                         type: 'SET_TASK',
                         payload: state.task,
@@ -192,7 +192,7 @@ function App() {
         <div className='col-span-1'>
           <h2 className='text-white text-2xl font-medium mb-4'>
             {!state.results.length
-              ? 'Input some data to see the results!'
+              ? 'Add some participants and tasks and then get the results!'
               : 'Results are here! Now get to work!'}
           </h2>
           <div className='text-gray-400'>
