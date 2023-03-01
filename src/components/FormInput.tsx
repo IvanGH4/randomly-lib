@@ -19,7 +19,7 @@ const FormInput = ({ value, type, handleChange, handleClick }: Props) => {
         value={value}
         onChange={handleChange}
       />
-      <button className='px-5 py-2 rounded-md bg-[#001cee]' onClick={handleClick}>
+      <button className='px-5 py-2 rounded-md bg-[#4054eb] hover:opacity-90' onClick={handleClick}>
         Add
       </button>
     </label>

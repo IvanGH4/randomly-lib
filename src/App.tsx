@@ -104,85 +104,88 @@ function App() {
     <main className='px-5 py-5 md:px-20 bg-[#333333] min-h-screen'>
       <h1 className='text-4xl font-semibold text-white'>Randomly!</h1>
 
-      <section className='mt-20 grid grid-cols-2'>
+      <section className='mt-20 grid grid-cols-1 lg:grid-cols-2'>
         <article>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className='col-span-1 flex flex-col gap-10 mb-10'
-          >
-            <FormInput
-              value={state.participant}
-              type='participant'
-              handleChange={(e: ChangeEvent<HTMLInputElement>) =>
-                dispatch({
-                  type: 'ON_CHANGE',
-                  payload: {
-                    key: 'participant',
-                    value: e.target.value,
-                  },
-                })
-              }
-              handleClick={() => {
-                if (state.participant !== '') {
-                  dispatch({
-                    type: 'SET_PARTICIPANT',
-                    payload: state.participant,
-                  });
-                }
-              }}
-            />
-          </form>
+          {!state.results.length && (
+            <>
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                className='col-span-1 flex flex-col gap-10 mb-10'
+              >
+                <FormInput
+                  value={state.participant}
+                  type='participant'
+                  handleChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    dispatch({
+                      type: 'ON_CHANGE',
+                      payload: {
+                        key: 'participant',
+                        value: e.target.value,
+                      },
+                    })
+                  }
+                  handleClick={() => {
+                    if (state.participant !== '') {
+                      dispatch({
+                        type: 'SET_PARTICIPANT',
+                        payload: state.participant,
+                      });
+                    }
+                  }}
+                />
+              </form>
 
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className='col-span-1 flex flex-col gap-10'
-          >
-            <FormInput
-              value={state.task}
-              type='task'
-              handleChange={(e: ChangeEvent<HTMLInputElement>) =>
-                {
-                  dispatch({
-                    type: 'ON_CHANGE',
-                    payload: {
-                      key: 'task',
-                      value: e.target.value,
-                    },
-                  })
-                }
-              }
-              handleClick={() => {
-                if (state.task !== '') {
-                  dispatch({
-                    type: 'SET_TASK',
-                    payload: state.task,
-                  });
-                }
-              }}
-            />
-          </form>
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                className='col-span-1 flex flex-col gap-10'
+              >
+                <FormInput
+                  value={state.task}
+                  type='task'
+                  handleChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    dispatch({
+                      type: 'ON_CHANGE',
+                      payload: {
+                        key: 'task',
+                        value: e.target.value,
+                      },
+                    });
+                  }}
+                  handleClick={() => {
+                    if (state.task !== '') {
+                      dispatch({
+                        type: 'SET_TASK',
+                        payload: state.task,
+                      });
+                    }
+                  }}
+                />
+              </form>
+            </>
+          )}
 
           <div className='mt-20 grid grid-cols-2 max-w-xl gap-5'>
-              <Cta
-                text='Get results'
-                type='success'
-                handleClick={() => dispatch({ type: 'GET_RESULTS' })}
-              />
-              <Cta
-                text='Clear all'
-                type='error'
-                handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
-              />
-              <Cta
-                text='Clear all but keep participants'
-                type='error'
-                handleClick={() => dispatch({ type: 'RESET_WITH_PARTICIPANTS' })}
-              />
-              <Cta
-                text='Clear all but keep tasks'
-                type='error'
-                handleClick={() => dispatch({ type: 'RESET_WITH_TASKS' })}
-              />
+            <Cta
+              text='Get results'
+              type='success'
+              handleClick={() => dispatch({ type: 'GET_RESULTS' })}
+              btnDisabled={state.results.length > 0}
+            />
+            <Cta
+              text='Clear all'
+              type='error'
+              handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
+            />
+            <Cta
+              text='Clear all but keep participants'
+              type='error'
+              handleClick={() => dispatch({ type: 'RESET_WITH_PARTICIPANTS' })}
+            />
+            <Cta
+              text='Clear all but keep tasks'
+              type='error'
+              handleClick={() => dispatch({ type: 'RESET_WITH_TASKS' })}
+            />
           </div>
         </article>
 
