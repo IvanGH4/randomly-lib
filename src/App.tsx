@@ -6,7 +6,7 @@ import FormInput from './components/FormInput';
 type Result = {
   name: string;
   task: string;
-}
+};
 
 type State = {
   tasks: string[];
@@ -42,7 +42,8 @@ const assignTasks = (participants: string[], tasks: string[]): Result[] => {
   // TODO: niveles de dificultad a las tareas
   while (tasks.length > results.length) {
     participants.forEach((name) => {
-      const task = shuffle(tasksAux)[Math.floor(Math.random() * tasksAux.length)];
+      const task =
+        shuffle(tasksAux)[Math.floor(Math.random() * tasksAux.length)];
       results.push({
         name,
         task: task || 'Zafaste!',
@@ -84,7 +85,7 @@ const reducer = (state: State, action: Action): State => {
     case 'CLEAR_ALL':
       return initialState;
     case 'RESET_WITH_PARTICIPANTS':
-      return { ...initialState, participants: state.participants  }
+      return { ...initialState, participants: state.participants };
     case 'GET_RESULTS':
       const results: Result[] = assignTasks(state.participants, state.tasks);
       return { ...state, results };
@@ -104,7 +105,7 @@ function App() {
         <article>
           <form
             onSubmit={(e) => e.preventDefault()}
-            className='col-span-1 flex flex-col gap-10'
+            className='col-span-1 flex flex-col gap-10 mb-10'
           >
             <FormInput
               value={state.participant}
@@ -125,7 +126,12 @@ function App() {
                 });
               }}
             />
+          </form>
 
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className='col-span-1 flex flex-col gap-10'
+          >
             <FormInput
               value={state.task}
               type='task'
@@ -146,6 +152,7 @@ function App() {
               }}
             />
           </form>
+
           <div className='flex gap-5'>
             <Cta
               text='Get results'
