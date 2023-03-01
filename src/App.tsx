@@ -23,6 +23,7 @@ type Action = {
     | 'ON_CHANGE'
     | 'CLEAR_ALL'
     | 'RESET_WITH_PARTICIPANTS'
+    | 'RESET_WITH_TASKS'
     | 'GET_RESULTS';
   payload?:
     | string
@@ -86,6 +87,8 @@ const reducer = (state: State, action: Action): State => {
       return initialState;
     case 'RESET_WITH_PARTICIPANTS':
       return { ...initialState, participants: state.participants };
+    case 'RESET_WITH_TASKS':
+      return { ...initialState, tasks: state.tasks };
     case 'GET_RESULTS':
       const results: Result[] = assignTasks(state.participants, state.tasks);
       return { ...state, results };
@@ -168,6 +171,11 @@ function App() {
               text='Clear all but keep participants'
               type='error'
               handleClick={() => dispatch({ type: 'RESET_WITH_PARTICIPANTS' })}
+            />
+            <Cta
+              text='Clear all but keep tasks'
+              type='error'
+              handleClick={() => dispatch({ type: 'RESET_WITH_TASKS' })}
             />
           </div>
         </article>
