@@ -123,10 +123,12 @@ function App() {
                 })
               }
               handleClick={() => {
-                dispatch({
-                  type: 'SET_PARTICIPANT',
-                  payload: state.participant,
-                });
+                if (state.participant !== '') {
+                  dispatch({
+                    type: 'SET_PARTICIPANT',
+                    payload: state.participant,
+                  });
+                }
               }}
             />
           </form>
@@ -139,25 +141,28 @@ function App() {
               value={state.task}
               type='task'
               handleChange={(e: ChangeEvent<HTMLInputElement>) =>
-                dispatch({
-                  type: 'ON_CHANGE',
-                  payload: {
-                    key: 'task',
-                    value: e.target.value,
-                  },
-                })
+                {
+                  dispatch({
+                    type: 'ON_CHANGE',
+                    payload: {
+                      key: 'task',
+                      value: e.target.value,
+                    },
+                  })
+                }
               }
               handleClick={() => {
-                dispatch({
-                  type: 'SET_TASK',
-                  payload: state.task,
-                });
+                if (state.task !== '') {
+                  dispatch({
+                    type: 'SET_TASK',
+                    payload: state.task,
+                  });
+                }
               }}
             />
           </form>
 
-          <div className='mt-20'>
-            <div className='flex gap-5'>
+          <div className='mt-20 grid grid-cols-2 max-w-xl gap-5'>
               <Cta
                 text='Get results'
                 type='success'
@@ -168,8 +173,6 @@ function App() {
                 type='error'
                 handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
               />
-            </div>
-            <div className='mt-8 flex gap-5'>
               <Cta
                 text='Clear all but keep participants'
                 type='error'
@@ -180,7 +183,6 @@ function App() {
                 type='error'
                 handleClick={() => dispatch({ type: 'RESET_WITH_TASKS' })}
               />
-            </div>
           </div>
         </article>
 
