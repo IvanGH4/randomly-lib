@@ -177,12 +177,12 @@ function App() {
               handleClick={() => dispatch({ type: 'CLEAR_ALL' })}
             />
             <Cta
-              text='Clear all but keep participants'
+              text='Clear tasks'
               type='error'
               handleClick={() => dispatch({ type: 'RESET_WITH_PARTICIPANTS' })}
             />
             <Cta
-              text='Clear all but keep tasks'
+              text='Clear participants'
               type='error'
               handleClick={() => dispatch({ type: 'RESET_WITH_TASKS' })}
             />
