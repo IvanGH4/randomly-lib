@@ -125,7 +125,7 @@ function App() {
                     })
                   }
                   handleClick={() => {
-                    if (state.participant !== '' && /^[a-zA-Z0-9]+$/.test(state.participant)) {
+                    if (state.participant !== '' && /^[a-zA-Z0-9\s-]+$/.test(state.participant)) {
                       dispatch({
                         type: 'SET_PARTICIPANT',
                         payload: state.participant,
@@ -152,7 +152,7 @@ function App() {
                     });
                   }}
                   handleClick={() => {
-                    if (state.task !== '' && /^[a-zA-Z0-9]+$/.test(state.task)) {
+                    if (state.task !== '' && /^[a-zA-Z0-9\s-]+$/.test(state.task)) {
                       dispatch({
                         type: 'SET_TASK',
                         payload: state.task,
