@@ -100,6 +100,16 @@ const reducer = (state: State, action: Action): State => {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const handleEditParticipant = (participant: string, idx: number) => {
+    // dispatch({
+    //   type: 'ON_CHANGE',
+    //   payload: {
+    //     key: 'participant',
+    //     value: participant,
+    //   },
+    // })
+  }
+
   return (
     <main className='px-5 py-5 md:px-20 bg-[#333333] min-h-screen'>
       <h1 className='text-4xl font-semibold text-white'>Randomly!</h1>
@@ -125,7 +135,7 @@ function App() {
                     })
                   }
                   handleClick={() => {
-                    if (state.participant !== '' && /^[a-zA-Z0-9\s-]+$/.test(state.participant)) {
+                    if (state.participant !== '' && /^[a-zA-Z0-9\s-?]+$/.test(state.participant)) {
                       dispatch({
                         type: 'SET_PARTICIPANT',
                         payload: state.participant,
@@ -192,7 +202,7 @@ function App() {
         <div className='col-span-1'>
           <h2 className='text-white text-2xl font-medium mb-4'>
             {!state.results.length
-              ? 'Add some participants and tasks and then get the results!'
+              ? 'Add some participants and tasks and then click the Get the results button!'
               : 'Results are here! Now get to work!'}
           </h2>
           <div className='text-gray-400'>
@@ -208,8 +218,14 @@ function App() {
               <>
                 <h3 className='mt-10 text-xl text-white'>Participants</h3>
                 <ul>
-                  {state.participants.map((p) => (
-                    <li key={p}>{p}</li>
+                  {state.participants.map((p, idx) => (
+                    <div className='flex items-center gap-1'>
+                      {/* onClick={() => handleEditParticipant(p, idx)} */}
+                      {/* <button>
+                        <img src="/edit.png" alt="Edit icon" className='max-w-[20px]' />
+                      </button> */}
+                      <li key={p}>{p}</li>
+                    </div>
                   ))}
                 </ul>
                 <h3 className='mt-10 text-xl text-white'>Tasks</h3>
