@@ -202,7 +202,7 @@ function App() {
         <div className='col-span-1'>
           <h2 className='text-white text-2xl font-medium mb-4'>
             {!state.results.length
-              ? 'Add some participants and tasks and then click the Get the results button!'
+              ? 'Add some participants and tasks and then click the Get results button!'
               : 'Results are here! Now get to work!'}
           </h2>
           <div className='text-gray-400'>
