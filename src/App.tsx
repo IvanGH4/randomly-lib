@@ -43,23 +43,76 @@ type Action = {
 //   return array.sort(() => Math.random() - 0.5);
 // };
 
-const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
-  // const tasksAux = [...tasks];
-  // const results: Result[] = [];
-  // // TODO: niveles de dificultad a las tareas
-  // while (tasks.length > results.length) {
-  //   participants.forEach((name) => {
-  //     const task =
-  //       shuffle(tasksAux)[Math.floor(Math.random() * tasksAux.length)];
-  //     results.push({
-  //       name,
-  //       task: task || 'Zafaste!',
-  //     });
-  //     tasksAux.splice(tasksAux.indexOf(task), 1);
-  //   });
-  // }
+// const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
+//   // const tasksAux = [...tasks];
+//   // const results: Result[] = [];
+//   // // TODO: niveles de dificultad a las tareas
+//   // while (tasks.length > results.length) {
+//   //   participants.forEach((name) => {
+//   //     const task =
+//   //       shuffle(tasksAux)[Math.floor(Math.random() * tasksAux.length)];
+//   //     results.push({
+//   //       name,
+//   //       task: task || 'Zafaste!',
+//   //     });
+//   //     tasksAux.splice(tasksAux.indexOf(task), 1);
+//   //   });
+//   // }
 
-  // return results as Result[];
+//   // return results as Result[];
+//   const taskDifficulties = Array.from(
+//     new Set(tasks.map((task) => task.difficulty))
+//   );
+//   const tasksByDifficulty: { [difficulty: number]: Task[] } = {};
+//   taskDifficulties.forEach((difficulty) => {
+//     tasksByDifficulty[difficulty] = tasks.filter(
+//       (task) => task.difficulty === difficulty
+//     );
+//   });
+
+//   const taskCountsByDifficulty: { [difficulty: number]: number } = {};
+//   taskDifficulties.forEach((difficulty) => {
+//     taskCountsByDifficulty[difficulty] = tasksByDifficulty[difficulty].length;
+//   });
+
+//   const participantTasks: { [name: string]: Task[] } = {};
+//   participants.forEach((name) => {
+//     participantTasks[name] = [];
+//   });
+
+//   const results: Result[] = [];
+//   for (
+//     let difficultyIndex = 0;
+//     difficultyIndex < taskDifficulties.length;
+//     difficultyIndex++
+//   ) {
+//     const difficulty = taskDifficulties[difficultyIndex];
+//     for (
+//       let participantIndex = 0;
+//       participantIndex < participants.length;
+//       participantIndex++
+//     ) {
+//       const currentParticipant = participants[participantIndex];
+//       console.log('participantTasks[currentParticipant]', participantTasks[currentParticipant]);
+//       console.log('tasksByDifficulty[difficulty]', tasksByDifficulty[difficulty]);
+      
+//       const availableTasks = tasksByDifficulty[difficulty].filter(
+//         (task) => !participantTasks[currentParticipant].includes(task)
+//       );
+//       const task =
+//         availableTasks[Math.floor(Math.random() * availableTasks.length)];
+//       participantTasks[currentParticipant].push(task);
+//       results.push({
+//         name: currentParticipant,
+//         task,
+//       });
+//     }
+//   }
+
+//   return results;
+// };
+
+const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
   const taskDifficulties = Array.from(
     new Set(tasks.map((task) => task.difficulty))
   );
@@ -80,6 +133,8 @@ const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
     participantTasks[name] = [];
   });
 
+  const assignedTasks: Task[] = [];
+
   const results: Result[] = [];
   for (
     let difficultyIndex = 0;
@@ -93,12 +148,19 @@ const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
       participantIndex++
     ) {
       const currentParticipant = participants[participantIndex];
+
       const availableTasks = tasksByDifficulty[difficulty].filter(
-        (task) => !participantTasks[currentParticipant].includes(task)
+        (task) =>
+          !participantTasks[currentParticipant].includes(task) &&
+          !assignedTasks.includes(task)
       );
+      if (availableTasks.length === 0) {
+        continue;
+      }
       const task =
         availableTasks[Math.floor(Math.random() * availableTasks.length)];
       participantTasks[currentParticipant].push(task);
+      assignedTasks.push(task);
       results.push({
         name: currentParticipant,
         task,
@@ -108,6 +170,7 @@ const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
 
   return results;
 };
+
 
 const initialState: State = {
   tasks: [],
