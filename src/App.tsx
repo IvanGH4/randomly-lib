@@ -119,7 +119,7 @@ function App() {
     <main className="px-5 py-5 md:px-20 bg-[#333333] min-h-screen">
       <h1 className="text-4xl font-semibold text-white">Randomly!</h1>
 
-      <section className="mt-20 grid grid-cols-1 lg:grid-cols-2">
+      <section className="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-5">
         <article>
           {!state.results.length && (
             <>
@@ -222,11 +222,11 @@ function App() {
         </article>
 
         <div className="col-span-1">
-          <h2 className="text-white text-2xl font-medium mb-4">
-            {!state.results.length
-              ? "Add some participants and tasks and then click the Get results button!"
-              : "Results are here! Now get to work!"}
-          </h2>
+          {state.results.length > 0 && (
+            <h2 className="text-white text-2xl font-medium mb-4">
+              Results are here! Now get to work!
+            </h2>
+          )}
           <div className="text-gray-400">
             {state.results.length ? (
               state.results.map((result, i) => (
