@@ -3,10 +3,10 @@ import { ChangeEvent, useReducer } from "react";
 import Cta from "./components/Cta";
 import FormInput from "./components/FormInput";
 
-type Result = {
-  name: string;
-  task: Task;
-};
+// type Result = {
+//   name: string;
+//   task: Task;
+// };
 
 type Task = {
   name: string;
@@ -18,7 +18,8 @@ type State = {
   participants: string[];
   task: Task;
   participant: string;
-  results: Result[];
+  // results: Result[];
+  results: { [key: string]: string[] };
 };
 
 type Action = {
@@ -39,34 +40,77 @@ type Action = {
     | Task;
 };
 
-const shuffle = (array: string[]): string[] => {
-  return array.sort(() => Math.random() - 0.5);
-};
+// const shuffle = (array: string[]): string[] => {
+//   return array.sort(() => Math.random() - 0.5);
+// };
 
-const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
-  const tasksAux = [...tasks];
-  const results: Result[] = [];
+function divideSkills(
+  names: string[],
+  skills: Task[]
+): { [key: string]: string[] } {
+  const result = {};
+  const numNames = names.length;
+  const numSkills = skills.length;
 
-  while (tasks.length > results.length) {
-    shuffle(participants).forEach((name) => {
-      const task = tasksAux[Math.floor(Math.random() * tasksAux.length)];
-      results.push({
-        name,
-        task: task || { name: "Zafaste!", difficulty: 0 },
-      });
-      tasksAux.splice(tasksAux.indexOf(task), 1);
-    });
+  // Sort skills in ascending order of level
+  skills.sort((a, b) => a.difficulty - b.difficulty);
+
+  let skillIndex = 0;
+  let personIndex = 0;
+  while (skillIndex < numSkills) {
+    const personName = names[personIndex];
+    // @ts-ignore
+    const personSkills = result[personName] || [];
+
+    if (
+      !personSkills.some(
+        // eslint-disable-next-line no-loop-func
+        (skill: { difficulty: number }) =>
+          skill.difficulty === skills[skillIndex].difficulty
+      ) ||
+      numSkills - skillIndex <= numNames - personIndex
+    ) {
+      personSkills.push(skills[skillIndex]);
+      skillIndex++;
+    }
+    // @ts-ignore
+    result[personName] = personSkills;
+    personIndex = (personIndex + 1) % numNames;
   }
 
-  return results as Result[];
-};
+  // Convert skills to skill names only
+  for (const personName in result) {
+    // @ts-ignore
+    result[personName] = result[personName].map((skill) => skill.name);
+  }
+
+  return result;
+}
+
+// const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
+//   const tasksAux = [...tasks];
+//   const results: Result[] = [];
+
+//   while (tasks.length > results.length) {
+//     shuffle(participants).forEach((name) => {
+//       const task = tasksAux[Math.floor(Math.random() * tasksAux.length)];
+//       results.push({
+//         name,
+//         task: task || { name: "Zafaste!", difficulty: 0 },
+//       });
+//       tasksAux.splice(tasksAux.indexOf(task), 1);
+//     });
+//   }
+
+//   return results as Result[];
+// };
 
 const initialState: State = {
   tasks: [],
   participants: [],
   task: {} as Task,
   participant: "",
-  results: [],
+  results: {},
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -105,7 +149,11 @@ const reducer = (state: State, action: Action): State => {
     case "RESET_WITH_TASKS":
       return { ...initialState, tasks: state.tasks };
     case "GET_RESULTS":
-      const results: Result[] = assignTasks(state.participants, state.tasks);
+      // const results: Result[] = assignTasks(state.participants, state.tasks);
+      const results: { [key: string]: string[] } = divideSkills(
+        state.participants,
+        state.tasks
+      );
       return { ...state, results };
     default:
       return state;
@@ -201,7 +249,7 @@ function App() {
               text="Get results"
               type="success"
               handleClick={() => dispatch({ type: "GET_RESULTS" })}
-              btnDisabled={state.results.length > 0}
+              btnDisabled={Object.keys(state.results).length > 0}
             />
             <Cta
               text="Clear all"
@@ -222,18 +270,21 @@ function App() {
         </article>
 
         <div className="col-span-1">
-          {state.results.length > 0 && (
+          {Object.keys(state.results).length > 0 && (
             <h2 className="text-white text-2xl font-medium mb-4">
               Results are here! Now get to work!
             </h2>
           )}
           <div className="text-gray-400">
-            {state.results.length ? (
-              state.results.map((result, i) => (
+            {Object.keys(state.results).length > 0 ? (
+              Object.keys(state.results).map((item, i) => (
                 <div key={i}>
-                  <p>
-                    {result.name}: {result.task?.name}
-                  </p>
+                  <p className="font-semibold text-orange-500">{item}</p>
+                  <ul className="pl-4">
+                    {state.results[item].map((t) => (
+                      <li key={t}>{t}</li>
+                    ))}
+                  </ul>
                 </div>
               ))
             ) : (
