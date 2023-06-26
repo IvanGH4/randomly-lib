@@ -19,7 +19,7 @@ type State = {
   task: Task;
   participant: string;
   // results: Result[];
-  results: { [key: string]: string[] };
+  results: { [key: string]: Task[] };
 };
 
 type Action = {
@@ -44,48 +44,103 @@ type Action = {
 //   return array.sort(() => Math.random() - 0.5);
 // };
 
-function divideSkills(
-  names: string[],
-  skills: Task[]
-): { [key: string]: string[] } {
-  const result = {};
-  const numNames = names.length;
-  const numSkills = skills.length;
+// function divideSkills(
+//   names: string[],
+//   skills: Task[]
+// ): { [key: string]: string[] } {
+//   const result = {};
+//   const numNames = names.length;
+//   const numSkills = skills.length;
 
-  // Sort skills in ascending order of level
-  skills.sort((a, b) => a.difficulty - b.difficulty);
+//   // Sort skills in ascending order of level
+//   skills.sort((a, b) => a.difficulty - b.difficulty);
 
-  let skillIndex = 0;
-  let personIndex = 0;
-  while (skillIndex < numSkills) {
-    const personName = names[personIndex];
+//   let skillIndex = 0;
+//   let personIndex = 0;
+//   while (skillIndex < numSkills) {
+//     const personName = names[personIndex];
+//     // @ts-ignore
+//     const personSkills = result[personName] || [];
+
+//     if (
+//       !personSkills.some(
+//         // eslint-disable-next-line no-loop-func
+//         (skill: { difficulty: number }) =>
+//           skill.difficulty === skills[skillIndex].difficulty
+//       ) ||
+//       numSkills - skillIndex <= numNames - personIndex
+//     ) {
+//       personSkills.push(skills[skillIndex]);
+//       skillIndex++;
+//     }
+//     // @ts-ignore
+//     result[personName] = personSkills;
+//     personIndex = (personIndex + 1) % numNames;
+//   }
+
+//   // Convert skills to skill names only
+//   for (const personName in result) {
+//     // @ts-ignore
+//     result[personName] = result[personName].map((skill) => skill.name);
+//   }
+
+//   return result;
+// }
+
+function divideSkills(members: string[], tasks: Task[]) {
+  // Sort tasks by difficulty in descending order
+  tasks.sort((a, b) => b.difficulty - a.difficulty);
+
+  // Create an object to store the assigned tasks for each member
+  const assignedTasks = {};
+
+  // Initialize an empty array for each member
+  members.forEach(member => {
     // @ts-ignore
-    const personSkills = result[personName] || [];
+    assignedTasks[member] = [];
+  });
 
-    if (
-      !personSkills.some(
-        // eslint-disable-next-line no-loop-func
-        (skill: { difficulty: number }) =>
-          skill.difficulty === skills[skillIndex].difficulty
-      ) ||
-      numSkills - skillIndex <= numNames - personIndex
-    ) {
-      personSkills.push(skills[skillIndex]);
-      skillIndex++;
+  // Loop through each task and assign it to the member with the lowest total difficulty
+  tasks.forEach(task => {
+    // Find the member with the lowest total difficulty
+    let minDifficultyMember = members[0];
+    // @ts-ignore
+    let minTotalDifficulty = getTotalDifficulty(assignedTasks[minDifficultyMember]);
+
+    for (const member of members) {
+      // @ts-ignore
+      const totalDifficulty = getTotalDifficulty(assignedTasks[member]);
+
+      if (totalDifficulty < minTotalDifficulty) {
+        minTotalDifficulty = totalDifficulty;
+        minDifficultyMember = member;
+      }
     }
-    // @ts-ignore
-    result[personName] = personSkills;
-    personIndex = (personIndex + 1) % numNames;
-  }
 
-  // Convert skills to skill names only
-  for (const personName in result) {
+    // Assign the task to the member
     // @ts-ignore
-    result[personName] = result[personName].map((skill) => skill.name);
-  }
+    assignedTasks[minDifficultyMember].push(task);
+  });
 
-  return result;
+  return assignedTasks;
 }
+
+function getTotalDifficulty(tasks: Task[]) {
+  return tasks.reduce((total, task) => total + task.difficulty, 0);
+}
+
+// Example usage
+// const members = ['john', 'maria', 'joaco'];
+// const tasks = [
+//   { name: 'code', difficulty: 100 },
+//   { name: 'write', difficulty: 12 },
+//   { name: 'speak', difficulty: 6 },
+//   { name: 'read', difficulty: 23 },
+// ];
+
+// const result = distributeTasks(members, tasks);
+// console.log('Result', result);
+
 
 // const assignTasks = (participants: string[], tasks: Task[]): Result[] => {
 //   const tasksAux = [...tasks];
@@ -150,7 +205,7 @@ const reducer = (state: State, action: Action): State => {
       return { ...initialState, tasks: state.tasks };
     case "GET_RESULTS":
       // const results: Result[] = assignTasks(state.participants, state.tasks);
-      const results: { [key: string]: string[] } = divideSkills(
+      const results: { [key: string]: Task[] } = divideSkills(
         state.participants,
         state.tasks
       );
@@ -210,6 +265,8 @@ function App() {
                   syntax:
                   <br />
                   <code>`task name - difficulty`</code>
+                  <br />
+                  Take into account that a higher number corresponds to a higher difficulty.
                 </p>
                 <FormInput
                   value={state.task.name}
@@ -270,9 +327,13 @@ function App() {
         </article>
 
         <div className="col-span-1">
-          {Object.keys(state.results).length > 0 && (
+          {Object.keys(state.results).length > 0 ? (
             <h2 className="text-white text-2xl font-medium mb-4">
               Results are here! Now get to work!
+            </h2>
+          ) : (
+            <h2 className="text-white text-2xl font-medium mb-4">
+              Random the sh*t out of it!
             </h2>
           )}
           <div className="text-gray-400">
@@ -282,7 +343,7 @@ function App() {
                   <p className="font-semibold text-orange-500">{item}</p>
                   <ul className="pl-4">
                     {state.results[item].map((t) => (
-                      <li key={t}>{t}</li>
+                      <li key={t.name}>{t.name}</li>
                     ))}
                   </ul>
                 </div>
