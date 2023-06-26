@@ -40,9 +40,9 @@ type Action = {
     | Task;
 };
 
-// const shuffle = (array: string[]): string[] => {
-//   return array.sort(() => Math.random() - 0.5);
-// };
+const shuffle = (array: string[]): string[] => {
+  return array.sort(() => Math.random() - 0.5);
+};
 
 // function divideSkills(
 //   names: string[],
@@ -95,7 +95,7 @@ function divideSkills(members: string[], tasks: Task[]) {
   const assignedTasks = {};
 
   // Initialize an empty array for each member
-  members.forEach(member => {
+  shuffle(members).forEach(member => {
     // @ts-ignore
     assignedTasks[member] = [];
   });
