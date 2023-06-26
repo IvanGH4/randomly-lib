@@ -261,12 +261,9 @@ function App() {
                 className="col-span-1 flex flex-col gap-x-10"
               >
                 <p className="text-sm text-gray-400 mb-3">
-                  To add a difficulty to a task you have to use the following
-                  syntax:
+                  Tasks must have a level of difficulty. To give a difficulty to a task do as the following example:
                   <br />
-                  <code>`task name - difficulty`</code>
-                  <br />
-                  Take into account that a higher number corresponds to a higher difficulty.
+                  Buy Coca Cola - 1
                 </p>
                 <FormInput
                   value={state.task.name}
