@@ -261,7 +261,7 @@ function App() {
                 className="col-span-1 flex flex-col gap-x-10"
               >
                 <p className="text-sm text-gray-400 mb-3">
-                  Tasks must have a level of difficulty. To give a difficulty to a task do as the following example:
+                  Tasks MUST have a level of difficulty. To give a difficulty to a task do as the following example:
                   <br />
                   Buy Coca Cola - 1
                 </p>
