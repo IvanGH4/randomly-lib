@@ -263,7 +263,7 @@ function App() {
                 <p className="text-sm text-gray-400 mb-3">
                   Tasks must have a level of difficulty. To give a difficulty to a task do as the following example:
                   <br />
-                  Buy Coca Cola - 1
+                  Buy Coke - 1
                 </p>
                 <FormInput
                   value={state.task.name}
